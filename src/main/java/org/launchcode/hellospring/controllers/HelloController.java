@@ -1,7 +1,11 @@
 package org.launchcode.hellospring.controllers;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Controller
 public class HelloController {
@@ -35,42 +39,45 @@ public class HelloController {
     }
 
     @RequestMapping(method = RequestMethod.GET)
-    @ResponseBody
     public String helloFrom(){
-        return  "<form method='post'>" +
-                "<input type='text' name='name'>" +
-                "<select name = 'language'>" +
-                "<option value = 'english'>English</option>"+
-                "<option value = 'spanish'>Spanish</option>"+
-                "<option value = 'french'>French</option>"+
-                "<option value = 'italian'>Italian</option>"+
-                "<option value = 'japanese'>Japanese</option>"+
-                "</select>"+
-                "<input type='submit' value='Greet me!'>" +
-                "</form>";
+        return "form";
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    @ResponseBody
-    public String createMessage(@RequestParam String name, @RequestParam String language) {
+    public String createMessage(@RequestParam String name, @RequestParam String language, Model model) {
+
         if (name == null) {
             name = "world";
         }
 
-        String greeting = "";
+        String greetMe = "";
 
         if (language.equals("english")){
-            greeting = "Hello, ";
+            greetMe = "Hello, ";
         } else if (language.equals("spanish")) {
-            greeting = "Hola, ";
+            greetMe = "Hola, ";
         } else if (language.equals("french")) {
-            greeting = "Bonjour, ";
+            greetMe = "Bonjour, ";
         } else if (language.equals("italian")) {
-            greeting = "Buongiorno, ";
+            greetMe = "Buongiorno, ";
         } else if (language.equals("japanese")) {
-            greeting = "Konnichiwa, ";
+            greetMe = "Konnichiwa, ";
         }
 
-        return greeting + name ;
+        String greeting =  greetMe + name ;
+        model.addAttribute("greeting", greeting);
+        return "hello";
+    }
+
+    @GetMapping("hello-names")
+    public String helloNames(Model model) {
+        List<String> names = new ArrayList<>();
+        names.add("LaunchCode");
+        names.add("Java");
+        names.add("Javascript");
+        names.add("Typescript");
+        names.add("Python");
+        model.addAttribute("names", names);
+        return "hello-list";
     }
 }
